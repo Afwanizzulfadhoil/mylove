@@ -5,4 +5,10 @@ function playAudio() {
     });
 }
 
+
+function ClickButton(){
+    var btn = document.getElementsByClassName('btn');
+    
+}
+
 window.onload = playAudio
