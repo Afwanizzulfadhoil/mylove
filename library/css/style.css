@@ -1,104 +1,95 @@
+/* Reset Margin & Padding (Tanda * bukan -) */
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
+    /* Ganti height ke min-height agar web bisa di-scroll ke bawah kalau di HP */
+    min-height: 100vh; 
     padding: 20px;
-    background-image: url('images/background.jpg');
+    background-image: url('/images/background.jpg');
     background-size: cover;
     background-position: center;
+    background-attachment: fixed; /* Background tidak ikut terscroll */
     font-family: Arial, sans-serif;
-    box-sizing: border-box;
 }
 
 .container {
-    display: grid;
-    grid-template-areas: 
-        "top-left top-right"
-        "button button"
-        "bottom-left bottom-right"
-        ". bottom-text";
-    gap: 15px;
-    text-align: center;
-    position: relative;
+    display: flex;
+    flex-direction: column; /* HP: Menumpuk dari atas ke bawah */
+    gap: 20px;
+    width: 100%;
+    max-width: 500px; /* Batas lebar di HP agar tidak terlalu raksasa */
+    padding: 20px;
+    /* Tambahan efek box transparan blur biar elegan (opsional) */
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border-radius: 15px;
 }
 
-.box {
-    width: 150px;
-    height: 200px;
-    background-color: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 20px;
+.box, .text {
+    width: 100%; /* Memenuhi lebar container di HP */
+    border-radius: 10px;
 }
 
 .box img {
     width: 100%;
-    height: 100%;
+    height: auto; /* Biar rasio gambar tidak gepeng */
     object-fit: cover;
     border-radius: 10px;
-}
-
-.box-top-left {
-    grid-area: top-left;
-}
-
-.box-bottom-right {
-    grid-area: bottom-right;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .text {
     color: white;
     background-color: #333;
     padding: 20px;
-    border-radius: 10px;
     box-shadow: 0 15px 8px rgba(0, 0, 0, 0.2);
     font-size: 14px;
     line-height: 1.6;
-    text-align: left;
+    text-align: center; /* Diubah ke center biar lebih romantis */
 }
 
-.text-top-right {
-    grid-area: top-right;
-}
-
-.text-bottom-left {
-    grid-area: bottom-left;
-}
-
+/* Teks penutup (dibersihkan dari position absolute) */
 .text-bottom {
-    grid-area: bottom-text;
-    position: absolute;
-    bottom: 50px;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    padding: 10px;
-    font-size: 12px;
-    line-height: 1.4;
+    background-color: transparent;
+    color: #333; /* Ganti putih jika background gelap */
+    box-shadow: none;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 0;
 }
 
 .button {
-    grid-area: button;
-    padding: 10px 20px;
+    padding: 12px 25px;
     font-size: 15px;
+    font-weight: bold;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     background-color: white;
     color: black;
-    margin: auto;
+    margin: 10px auto;
+    width: fit-content;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s; /* Efek membesar saat disentuh */
 }
 
-.container, .box, .text, .button {
-    animation: fadeIn 1s ease-out;
+.button:hover {
+    transform: scale(1.05);
+}
+
+/* Animasi */
+.container,
+.box,
+.text,
+.button {
+    animation: fadeIn 1.2s ease-out forwards;
 }
 
 @keyframes fadeIn {
@@ -112,13 +103,25 @@ body {
     }
 }
 
-@keyframes scaleUp {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
+/* ========================================= */
+/* MEDIA QUERY: TAMPILAN LAPTOP (Di atas 768px) */
+/* ========================================= */
+@media (min-width: 768px) {
+    .container {
+        flex-direction: row; /* Berjajar ke samping */
+        flex-wrap: wrap; /* Otomatis turun ke baris baru kalau penuh */
+        justify-content: space-between;
+        align-items: center;
+        max-width: 800px; /* Container melebar di laptop */
     }
-    to {
-        opacity: 1;
-        transform: scale(1);
+
+    /* Gambar dan Teks mengambil porsi setengah (48%) agar jadi 2 kolom */
+    .box, .text {
+        width: 48%; 
+    }
+
+    /* Teks penutup dan tombol tetap mengambil 1 baris penuh (100%) */
+    .button, .text-bottom {
+        width: 100%;
     }
 }
