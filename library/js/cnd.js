@@ -1,8 +1,8 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@+esm';
-
 // Ganti dengan URL dan Anon Key dari Project Settings Supabase Anda
 const SUPABASE_URL = 'https://vybghrduqgwyjjzjdish.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5YmdocmR1cWd3eWpqempkaXNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4MTk1MTAsImV4cCI6MjEwODM5NTUxMH0.8rZUsqWi6hTNvQkUUSE0womYD-h56H43WtzobkkrLhs';
+// Inisialisasi client menggunakan objek global window.supabase
+const { createClient } = window.supabase;
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 document.getElementById('cardForm').addEventListener('submit', async function (e) {
@@ -12,7 +12,6 @@ document.getElementById('cardForm').addEventListener('submit', async function (e
     btn.disabled = true;
 
     try {
-        // Insert data ke tabel 'cards' dan kembalikan data yang baru dimasukkan (termasuk ID-nya)
         const { data, error } = await supabase
             .from('cards')
             .insert([
@@ -27,10 +26,7 @@ document.getElementById('cardForm').addEventListener('submit', async function (e
 
         if (error) throw error;
 
-        // Ambil ID unik baris yang baru dibuat
         const cardId = data[0].id;
-
-        // Buat link unik mengarah ke card.html
         const uniqueLink = window.location.origin + window.location.pathname.replace('index.html', '') + 'card.html?id=' + cardId;
 
         document.getElementById('generatedLink').value = uniqueLink;

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Card For You</title>
+    <link rel="stylesheet" href="library/css/style.css">
+    <!-- Load Supabase UMD CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+    <audio id="myAudio" loop>
+        Your browser does not support the audio element.
+    </audio>
+
+    <button class="button" onclick="ClickButton()">BUKA</button>
+
+    <div class="container">
+        <div class="box">
+            <img id="cardImage" src="" alt="Foto">
+        </div>
+        <div class="text" id="cardMessage">
+            Memuat pesan...
+        </div>
+        <div class="text text-bottom" id="cardFooter">
+            ❤️
+        </div>
+    </div>
+
+    <script src="library/js/ccn.js"></script>
+    <script src="library/js/cnd.js"></script>
+    <script src="library/js/animation.js"></script>
+</body>
+
+</html>
