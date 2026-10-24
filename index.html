@@ -1,49 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For You</title>
+    <title>Buat Kartu Ucapanmu Sendiri</title>
     <link rel="stylesheet" href="library/css/style.css">
 </head>
-
 <body>
-    <audio id="myAudio" src="Music/Y2meta.app - Akhir Tak Bahagia - Misellia (Official Music Video) (128 kbps).mp3"
-        type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <div class="form-container">
+        <h2>Buat Kartu Spesial</h2>
+        <form id="cardForm">
+            <label>Nama Penerima:</label>
+            <input type="text" id="nama" required placeholder="Contoh: Cantikku">
 
-    <!-- Tombol untuk membuka kartu -->
-    <button class="button" onclick="ClickButton()">BUKA</button>
+            <label>Pesan / Kata-kata:</label>
+            <textarea id="pesan" rows="4" required placeholder="Tulis pesan romantis di sini..."></textarea>
 
-    <div class="container">
-        <!-- Baris 1 -->
-        <div class="box">
-            <img src="images/MyGirl.jpg" alt="Foto 1">
-        </div>
+            <label>Link Foto (URL):</label>
+            <input type="text" id="fotoUrl" required placeholder="Link foto (dari ImgBB / link publik)">
 
-        <div class="text">
-            Haii Wanita cantik, wanita baik, wanita kuat. Selamat hari perempuan sedunia ya cantikku!
-        </div>
+            <label>Pilih Lagu:</label>
+            <select id="pilihanMusik">
+                <option value="Music/lagu1.mp3">Lagu Romantis 1</option>
+                <option value="Music/lagu2.mp3">Lagu Galau 2</option>
+            </select>
 
-        <!-- Baris 2 -->
-        <div class="text">
-            Semoga kita bisa lama lagi bersamanya, kalau perlu sampai menua bersama wkwkwkwk, kalau punya masalah bilang
-            ke aku yaaaaa kita lewati masalah kamu bareng-bareng. Okeyy sayanggg?
-        </div>
+            <button type="submit" id="submitBtn">Buat Link Kartu</button>
+        </form>
 
-        <div class="box">
-            <img src="images/My-Girl.jpg" alt="Foto 2">
-        </div>
-
-        <!-- Penutup -->
-        <div class="text text-bottom">
-            Selamat hari perempuan sedunia cantikkuuuuuu ❤️
+        <div id="resultBox" style="display:none; margin-top: 20px;">
+            <p>Yeay! Link kartu kamu sudah jadi:</p>
+            <input type="text" id="generatedLink" readonly style="width: 100%;">
         </div>
     </div>
 
-    <script src="library/js/animation.js"></script>
+    <!-- Supabase JS Client via CDN -->
+    <script src="/library/js/cnd.js"></script>
 </body>
-
 </html>
