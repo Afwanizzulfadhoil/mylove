@@ -8,7 +8,7 @@ function playAudio() {
 
 
 function ClickButton(){
-    var btn = document.getElementsByClassName('.btn');
+    var btn = document.querySelector('.btn');
 
     if(btn){
         btn.style.display = 'none';
