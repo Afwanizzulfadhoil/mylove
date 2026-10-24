@@ -1,4 +1,4 @@
-/* Reset Margin & Padding (Tanda * bukan -) */
+/* Perbaikan: Tanda * untuk reset */
 * {
     margin: 0;
     padding: 0;
@@ -9,37 +9,60 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Ganti height ke min-height agar web bisa di-scroll ke bawah kalau di HP */
     min-height: 100vh; 
     padding: 20px;
-    background-image: url('/images/background.jpg');
+    background-image: url('../../images/background.jpg'); /* Sesuaikan path folder gambar jika perlu */
     background-size: cover;
     background-position: center;
-    background-attachment: fixed; /* Background tidak ikut terscroll */
+    background-attachment: fixed;
     font-family: Arial, sans-serif;
 }
 
+/* Container disembunyikan di awal */
 .container {
-    display: flex;
-    flex-direction: column; /* HP: Menumpuk dari atas ke bawah */
+    display: none; 
+    flex-direction: column;
     gap: 20px;
     width: 100%;
-    max-width: 500px; /* Batas lebar di HP agar tidak terlalu raksasa */
+    max-width: 500px;
     padding: 20px;
-    /* Tambahan efek box transparan blur biar elegan (opsional) */
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(8px);
     border-radius: 15px;
 }
 
+/* Saat aktif, container akan muncul */
+.container.active {
+    display: flex;
+}
+
 .box, .text {
-    width: 100%; /* Memenuhi lebar container di HP */
+    width: 100%;
     border-radius: 10px;
+    opacity: 0; /* Mulai dengan transparan untuk animasi slide */
+}
+
+/* Efek kemunculan berurutan seperti slide PPT */
+.container.active .box:nth-child(1),
+.container.active .text:nth-child(1) {
+    animation: fadeInSlide 0.8s ease-out 0.2s forwards;
+}
+.container.active .text:nth-child(2) {
+    animation: fadeInSlide 0.8s ease-out 0.5s forwards;
+}
+.container.active .text:nth-child(3) {
+    animation: fadeInSlide 0.8s ease-out 0.8s forwards;
+}
+.container.active .box:nth-child(4) {
+    animation: fadeInSlide 0.8s ease-out 1.1s forwards;
+}
+.container.active .text-bottom {
+    animation: fadeInSlide 0.8s ease-out 1.4s forwards;
 }
 
 .box img {
     width: 100%;
-    height: auto; /* Biar rasio gambar tidak gepeng */
+    height: auto;
     object-fit: cover;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -52,17 +75,17 @@ body {
     box-shadow: 0 15px 8px rgba(0, 0, 0, 0.2);
     font-size: 14px;
     line-height: 1.6;
-    text-align: center; /* Diubah ke center biar lebih romantis */
+    text-align: center;
 }
 
-/* Teks penutup (dibersihkan dari position absolute) */
 .text-bottom {
     background-color: transparent;
-    color: #333; /* Ganti putih jika background gelap */
+    color: white; 
     box-shadow: none;
     font-size: 16px;
     font-weight: bold;
     padding: 10px 0;
+    text-align: center;
 }
 
 .button {
@@ -77,22 +100,16 @@ body {
     margin: 10px auto;
     width: fit-content;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s; /* Efek membesar saat disentuh */
+    transition: transform 0.2s;
+    animation: fadeInSlide 1.2s ease-out forwards;
 }
 
 .button:hover {
     transform: scale(1.05);
 }
 
-/* Animasi */
-.container,
-.box,
-.text,
-.button {
-    animation: fadeIn 1.2s ease-out forwards;
-}
-
-@keyframes fadeIn {
+/* Keyframes untuk animasi slide */
+@keyframes fadeInSlide {
     from {
         opacity: 0;
         transform: translateY(20px);
@@ -107,20 +124,18 @@ body {
 /* MEDIA QUERY: TAMPILAN LAPTOP (Di atas 768px) */
 /* ========================================= */
 @media (min-width: 768px) {
-    .container {
-        flex-direction: row; /* Berjajar ke samping */
-        flex-wrap: wrap; /* Otomatis turun ke baris baru kalau penuh */
+    .container.active {
+        flex-direction: row;
+        flex-wrap: wrap;
         justify-content: space-between;
         align-items: center;
-        max-width: 800px; /* Container melebar di laptop */
+        max-width: 800px;
     }
 
-    /* Gambar dan Teks mengambil porsi setengah (48%) agar jadi 2 kolom */
     .box, .text {
         width: 48%; 
     }
 
-    /* Teks penutup dan tombol tetap mengambil 1 baris penuh (100%) */
     .button, .text-bottom {
         width: 100%;
     }
