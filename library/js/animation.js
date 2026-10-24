@@ -1,5 +1,6 @@
 function playAudio() {
     var audio = document.getElementById('myAudio');
+    audio.playAudio = 'auto';
     audio.play().catch(function(error) {
         console.log('Autoplay prevented. User interaction required.');
     });
@@ -7,7 +8,11 @@ function playAudio() {
 
 
 function ClickButton(){
-    var btn = document.getElementsByClassName('btn');
+    var btn = document.getElementsByClassName('.btn');
+
+    if(btn){
+        btn.style.display = 'none';
+    }
     
 }
 
