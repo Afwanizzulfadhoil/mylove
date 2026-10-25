@@ -1,75 +1,111 @@
-// Ganti dengan URL dan Anon Key dari Project Settings Supabase Anda
-const SUPABASE_URL = 'https://vybghrduqgwyjjzjdish.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5YmdocmR1cWd3eWpqempkaXNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4MTk1MTAsImV4cCI6MjEwODM5NTUxMH0.8rZUsqWi6hTNvQkUUSE0womYD-h56H43WtzobkkrLhs';
-// Inisialisasi client menggunakan objek global window.supabase
-const { createClient } = window.supabase;
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-document.getElementById('cardForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    const btn = document.getElementById('submitBtn');
-    btn.innerText = "Membuat Link...";
-    btn.disabled = true;
+const scriptUrl = document.currentScript.src;
 
-    try {
-        const { data, error } = await supabase
-            .from('cards')
-            .insert([
-                {
+async function initializeSupabase() {
+    const response = await fetch(new URL('.env', scriptUrl));
+    if (!response.ok) {
+        throw new Error(`Tidak dapat membaca konfigurasi Supabase (${response.status}).`);
+    }
+
+    const envText = await response.text();
+    const config = {};
+    for (const line of envText.split(/\r?\n/)) {
+        const match = line.match(/^\s*(SUPABASE_URL|SUPABASE_ANON_KEY)\s*=\s*(.*?)\s*;?\s*$/);
+        if (match) {
+            config[match[1]] = match[2].replace(/^(['"])(.*)\1$/, '$2');
+        }
+    }
+
+    if (!config.SUPABASE_URL || !config.SUPABASE_ANON_KEY) {
+        throw new Error('SUPABASE_URL atau SUPABASE_ANON_KEY tidak ditemukan di .env.');
+    }
+    if (!window.supabase?.createClient) {
+        throw new Error('Library Supabase gagal dimuat. Periksa koneksi internet atau CDN.');
+    }
+
+    const supabase = window.supabase.createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY);
+    initializeCardForm(supabase);
+
+    if (document.getElementById('cardMessage')) {
+        await loadCardData(supabase);
+    }
+}
+
+function initializeCardForm(supabase) {
+    const cardForm = document.getElementById('cardForm');
+    if (!cardForm) return;
+
+    cardForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const button = document.getElementById('submitBtn');
+        button.innerText = 'Membuat Link...';
+        button.disabled = true;
+
+        try {
+            const { data, error } = await supabase
+                .from('cards')
+                .insert({
                     nama: document.getElementById('nama').value,
                     pesan: document.getElementById('pesan').value,
                     foto_url: document.getElementById('fotoUrl').value,
                     musik: document.getElementById('pilihanMusik').value
-                }
-            ])
-            .select();
+                })
+                .select('id')
+                .single();
 
-        if (error) throw error;
+            if (error) throw error;
+            if (!data?.id) throw new Error('Supabase tidak mengembalikan ID kartu.');
 
-        const cardId = data[0].id;
-        const uniqueLink = window.location.origin + window.location.pathname.replace('index.html', '') + 'card.html?id=' + cardId;
+            const cardUrl = new URL('card.html', window.location.href);
+            cardUrl.searchParams.set('id', data.id);
+            document.getElementById('generatedLink').value = cardUrl.href;
+            document.getElementById('resultBox').style.display = 'block';
+            button.innerText = 'Berhasil Dibuat!';
+        } catch (error) {
+            console.error('Error inserting card:', error);
+            alert(`Gagal membuat kartu: ${error.message || 'periksa konfigurasi dan kebijakan Supabase.'}`);
+            button.innerText = 'Buat Link Kartu';
+            button.disabled = false;
+        }
+    });
+}
 
-        document.getElementById('generatedLink').value = uniqueLink;
-        document.getElementById('resultBox').style.display = 'block';
-        btn.innerText = "Berhasil Dibuat!";
-    } catch (error) {
-        console.error("Error inserting data: ", error);
-        alert("Gagal membuat link, cek kembali konfigurasi Supabase Anda.");
-        btn.innerText = "Buat Link Kartu";
-        btn.disabled = false;
-    }
-});
-
-const urlParams = new URLSearchParams(window.location.search);
-const cardId = urlParams.get('id');
-
-async function loadCardData() {
+async function loadCardData(supabase) {
+    const message = document.getElementById('cardMessage');
+    const cardId = new URLSearchParams(window.location.search).get('id');
     if (!cardId) {
-        document.getElementById('cardMessage').innerText = "Kartu tidak ditemukan!";
+        message.innerText = 'Kartu tidak ditemukan!';
         return;
     }
 
     try {
         const { data, error } = await supabase
             .from('cards')
-            .select('*')
+            .select('nama, pesan, foto_url, musik')
             .eq('id', cardId)
             .single();
 
         if (error || !data) {
-            document.getElementById('cardMessage').innerText = "Maaf, link kartu sudah tidak aktif atau salah.";
+            message.innerText = 'Maaf, link kartu sudah tidak aktif atau salah.';
             return;
         }
 
-        document.getElementById('cardMessage').innerText = data.pesan;
+        message.innerText = data.pesan;
         document.getElementById('cardImage').src = data.foto_url;
         document.getElementById('myAudio').src = data.musik;
         document.getElementById('cardFooter').innerText = `Untuk: ${data.nama} ❤️`;
-
     } catch (error) {
-        console.error("Error fetching card:", error);
-        document.getElementById('cardMessage').innerText = "Terjadi kesalahan saat memuat kartu.";
+        console.error('Error fetching card:', error);
+        message.innerText = 'Terjadi kesalahan saat memuat kartu.';
     }
 }
 
-loadCardData();
+initializeSupabase().catch((error) => {
+    console.error('Gagal menginisialisasi Supabase:', error);
+    const message = document.getElementById('cardMessage');
+    if (message) {
+        message.innerText = 'Gagal membaca konfigurasi Supabase.';
+    } else {
+        alert(`Gagal memulai aplikasi: ${error.message}`);
+    }
+});
