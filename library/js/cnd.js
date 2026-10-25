@@ -1,4 +1,8 @@
 
+(() => {
+if (window.__myloveCardAppInitialized) return;
+window.__myloveCardAppInitialized = true;
+
 const scriptUrl = document.currentScript.src;
 
 async function initializeSupabase() {
@@ -109,3 +113,4 @@ initializeSupabase().catch((error) => {
         alert(`Gagal memulai aplikasi: ${error.message}`);
     }
 });
+})();
