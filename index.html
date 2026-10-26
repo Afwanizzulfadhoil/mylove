@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Buat Kartu Ucapanmu Sendiri</title>
@@ -7,36 +8,51 @@
     <!-- Load Supabase UMD CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
-    <div class="form-container">
+
+    <div class="card" id="myCard">
+        <img src="https://images.icon-icons.com/2416/PNG/512/letter_love_mail_message_post_wings_valentine_icon_146720.png"
+            alt="Ilustrasi Card">
         <h2>Buat Kartu Spesial</h2>
+
         <form id="cardForm">
+            <!-- Tambahan Pilihan Jenis / Tema Kartu -->
+            <label>Pilih Tema Kartu:</label>
+            <select id="jenisCard" required>
+                <option value="love">❤️ Love Card (Romantis)</option>
+                <option value="hbd">🎂 Birthday Card (Ulang Tahun)</option>
+                <option value="wedding">💍 Undangan Pernikahan</option>
+            </select>
+
             <label>Nama Penerima:</label>
             <input type="text" id="nama" required placeholder="Contoh: Cantikku">
 
             <label>Pesan / Kata-kata:</label>
-            <textarea id="pesan" rows="4" required placeholder="Tulis pesan romantis di sini..."></textarea>
+            <textarea id="pesan" rows="3" required placeholder="Tulis pesan spesial di sini..."></textarea>
 
             <label>Link Foto (URL):</label>
-            <input type="text" id="fotoUrl" required placeholder="Link foto (dari ImgBB / link publik)">
+            <input type="text" id="fotoUrl" required placeholder="Link foto publik">
 
             <label>Pilih Lagu:</label>
             <select id="pilihanMusik">
-                <option value="Music/Y2meta.app - Akhir Tak Bahagia - Misellia (Official Music Video) (128 kbps).mp3">Akhir Tak Bahagia - Misellia</option>
+                <option value="Music/akhir-tak-bahagia.mp3">Akhir Tak Bahagia - Misellia</option>
             </select>
 
             <button type="submit" id="submitBtn">Buat Link Kartu</button>
         </form>
 
-        <div id="resultBox" style="display:none; margin-top: 20px;">
-            <p>Yeay! Link kartu kamu sudah jadi:</p>
-            <input type="text" id="generatedLink" readonly style="width: 100%;">
+        <div id="resultBox" style="display:none; margin-top: 15px; text-align: left;">
+            <p style="font-size: 13px; color: #059669; font-weight: 600;" role="complementary">Yeay! Link kartu kamu
+                sudah jadi:</p>
+            <input type="text" id="generatedLink" readonly style="width: 100%; font-size: 12px; padding: 6px;">
         </div>
     </div>
 
-    <!-- Supabase JS Client via CDN -->
+    <!-- Script Pendukung Eksternal -->
     <script src="library/js/cnd.js?v=2"></script>
     <script src="library/js/animation.js"></script>
 
 </body>
+
 </html>
